@@ -25,11 +25,8 @@ const translateLoader = document.getElementById('translateLoader');
 const translateText   = document.querySelector('#translateBtn .btn-text');
 const translateIcon   = document.querySelector('#translateBtn .btn-icon');
 
-const resultCard    = document.getElementById('resultCard');
-const resultMeta    = document.getElementById('resultMeta');
-const transcriptionText = document.getElementById('transcriptionText');
-const copyBtn       = document.getElementById('copyBtn');
-const downloadBtn   = document.getElementById('downloadBtn');
+const resultsContainer = document.getElementById('resultsContainer');
+const resultTemplate = document.getElementById('resultTemplate');
 const errorCard     = document.getElementById('errorCard');
 const errorMessage  = document.getElementById('errorMessage');
 const errorClose    = document.getElementById('errorClose');
@@ -70,7 +67,7 @@ fileInput.addEventListener('change', () => {
 function setFile(file) {
   selectedFile = file;
   hideError();
-  hideResult();
+  resultsContainer.innerHTML = ''; // clear previous results on new file
 
   // Update preview
   fileName.textContent = file.name;
@@ -101,16 +98,15 @@ function clearFile() {
   dropZone.style.display = '';
   transcribeBtn.disabled = true;
   translateBtn.disabled = true;
-  hideResult();
+  resultsContainer.innerHTML = '';
   hideError();
 }
 
-async function processAudio(endpoint, btn, txtElem, iconElem, loaderElem, loadingText, originalText) {
+async function processAudio(endpoint, btn, txtElem, iconElem, loaderElem, loadingText, originalText, resultTitle) {
   if (!selectedFile) return;
 
   setLoading(true, btn, txtElem, iconElem, loaderElem, loadingText, originalText);
   hideError();
-  hideResult();
 
   try {
     const prompt = promptInput.value.trim();
@@ -170,7 +166,7 @@ async function processAudio(endpoint, btn, txtElem, iconElem, loaderElem, loadin
       file: selectedFile.name,
       size: formatBytes(uploadSize),
       resampledNote,
-    });
+    }, resultTitle);
 
   } catch (err) {
     console.error('Transcription error:', err);
@@ -186,12 +182,12 @@ async function processAudio(endpoint, btn, txtElem, iconElem, loaderElem, loadin
 }
 
 transcribeBtn.addEventListener('click', () => {
-  processAudio(API_BASE, transcribeBtn, btnText, btnIcon, btnLoader, 'Transcribing…', 'Transcribe Audio');
+  processAudio(API_BASE, transcribeBtn, btnText, btnIcon, btnLoader, 'Transcribing…', 'Transcribe Audio', 'Transcription');
 });
 
 translateBtn.addEventListener('click', () => {
   const TRANSLATE_URL = API_BASE.replace('/transcribe', '/translate');
-  processAudio(TRANSLATE_URL, translateBtn, translateText, translateIcon, translateLoader, 'Translating…', 'Translate (to EN)');
+  processAudio(TRANSLATE_URL, translateBtn, translateText, translateIcon, translateLoader, 'Translating…', 'Translate (to EN)', 'Translation (to EN)');
 });
 
 // ── UI Helpers ────────────────────────────────────
@@ -213,17 +209,53 @@ function setLoading(loading, btn, txtElem, iconElem, loaderElem, loadingText, or
   }
 }
 
-function showResult(text, meta) {
-  transcriptionText.textContent = text;
-  resultMeta.textContent = `✓  Completed in ${meta.elapsed}s  ·  ${meta.file}  ·  ${meta.size}${meta.resampledNote}`;
-  resultCard.classList.remove('hidden');
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
+function showResult(text, meta, title) {
+  const clone = resultTemplate.content.cloneNode(true);
+  const card = clone.querySelector('.result-card');
+  const titleElem = clone.querySelector('.result-title');
+  const metaElem = clone.querySelector('.result-meta');
+  const textElem = clone.querySelector('.transcription-text');
+  const copyBtn = clone.querySelector('.copyBtn');
+  const downloadBtn = clone.querySelector('.downloadBtn');
 
-function hideResult() {
-  resultCard.classList.add('hidden');
-  transcriptionText.textContent = '';
-  resultMeta.textContent = '';
+  titleElem.textContent = title;
+  textElem.textContent = text;
+  metaElem.textContent = `✓  Completed in ${meta.elapsed}s  ·  ${meta.file}  ·  ${meta.size}${meta.resampledNote}`;
+
+  // Local Copy handler
+  copyBtn.addEventListener('click', async () => {
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      copyBtn.classList.add('success');
+      const span = copyBtn.querySelector('span:last-child');
+      const originalText = span.textContent;
+      span.textContent = 'Copied!';
+      setTimeout(() => {
+        copyBtn.classList.remove('success');
+        span.textContent = originalText;
+      }, 2000);
+    } catch {
+      showError('Could not copy to clipboard. Please select and copy manually.');
+    }
+  });
+
+  // Local Download handler
+  downloadBtn.addEventListener('click', () => {
+    if (!text) return;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const baseName = (selectedFile?.name || 'audio').replace(/\.[^.]+$/, '');
+    const suffix = title.toLowerCase().includes('translate') ? 'translation' : 'transcription';
+    a.href = url;
+    a.download = `${baseName}_${suffix}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  resultsContainer.prepend(card);
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function showError(msg) {
@@ -236,37 +268,6 @@ function hideError() {
 }
 
 errorClose.addEventListener('click', hideError);
-
-// ── Copy & Download ───────────────────────────────
-copyBtn.addEventListener('click', async () => {
-  const text = transcriptionText.textContent;
-  if (!text) return;
-  try {
-    await navigator.clipboard.writeText(text);
-    copyBtn.classList.add('success');
-    const original = copyBtn.querySelector('span:last-child');
-    original.textContent = 'Copied!';
-    setTimeout(() => {
-      copyBtn.classList.remove('success');
-      original.textContent = 'Copy';
-    }, 2000);
-  } catch {
-    showError('Could not copy to clipboard. Please select and copy manually.');
-  }
-});
-
-downloadBtn.addEventListener('click', () => {
-  const text = transcriptionText.textContent;
-  if (!text) return;
-  const blob = new Blob([text], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const baseName = (selectedFile?.name || 'transcription').replace(/\.[^.]+$/, '');
-  a.href = url;
-  a.download = `${baseName}_transcription.txt`;
-  a.click();
-  URL.revokeObjectURL(url);
-});
 
 // ── Utilities ─────────────────────────────────────
 function formatBytes(bytes) {

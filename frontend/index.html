@@ -149,37 +149,42 @@
       </div>
     </div>
 
-    <!-- Result Card -->
-    <div class="card result-card hidden" id="resultCard">
-      <div class="result-header">
-        <div class="result-title-row">
-          <h2 class="result-title">Transcription</h2>
-          <div class="result-actions">
-            <button class="icon-btn" id="copyBtn" title="Copy to clipboard">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.8" />
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor"
-                  stroke-width="1.8" />
-              </svg>
-              <span>Copy</span>
-            </button>
-            <button class="icon-btn" id="downloadBtn" title="Download as text">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="1.8"
-                  stroke-linecap="round" />
-                <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              </svg>
-              <span>Download</span>
-            </button>
+    <!-- Results Container -->
+    <div id="resultsContainer" class="results-container"></div>
+
+    <!-- Result Card Template -->
+    <template id="resultTemplate">
+      <div class="card result-card">
+        <div class="result-header">
+          <div class="result-title-row">
+            <h2 class="result-title"></h2>
+            <div class="result-actions">
+              <button class="icon-btn copyBtn" title="Copy to clipboard">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.8" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor"
+                    stroke-width="1.8" />
+                </svg>
+                <span>Copy</span>
+              </button>
+              <button class="icon-btn downloadBtn" title="Download as text">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                  <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                <span>Download</span>
+              </button>
+            </div>
           </div>
+          <div class="result-meta"></div>
         </div>
-        <div class="result-meta" id="resultMeta"></div>
+        <div class="result-body">
+          <p class="transcription-text"></p>
+        </div>
       </div>
-      <div class="result-body">
-        <p class="transcription-text" id="transcriptionText"></p>
-      </div>
-    </div>
+    </template>
 
     <!-- Error Card -->
     <div class="card error-card hidden" id="errorCard">
