@@ -32,6 +32,17 @@ const errorMessage  = document.getElementById('errorMessage');
 const errorClose    = document.getElementById('errorClose');
 const resampleToggle = document.getElementById('resampleToggle');
 
+const recordSection = document.getElementById('recordSection');
+const recordBtn = document.getElementById('recordBtn');
+const recordBtnText = document.getElementById('recordBtnText');
+const recordIndicator = document.getElementById('recordIndicator');
+
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+let recordStartTime = 0;
+let recordTimerInterval = null;
+
 let selectedFile = null;
 
 // ── Drag & Drop ───────────────────────────────────
@@ -63,6 +74,63 @@ fileInput.addEventListener('change', () => {
   if (fileInput.files[0]) setFile(fileInput.files[0]);
 });
 
+// ── Recording Handling ────────────────────────────
+function updateRecordTimer() {
+  if (!isRecording) return;
+  const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+  const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+  const s = String(elapsed % 60).padStart(2, '0');
+  recordBtnText.textContent = `Recording... ${m}:${s} (Click to Stop)`;
+}
+
+recordBtn.addEventListener('click', async () => {
+  if (isRecording) {
+    mediaRecorder.stop();
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+
+    mediaRecorder.onstart = () => {
+      isRecording = true;
+      recordBtn.classList.add('recording');
+      recordIndicator.classList.remove('hidden');
+      recordStartTime = Date.now();
+      updateRecordTimer();
+      recordTimerInterval = setInterval(updateRecordTimer, 1000);
+    };
+
+    mediaRecorder.onstop = () => {
+      isRecording = false;
+      clearInterval(recordTimerInterval);
+      recordBtn.classList.remove('recording');
+      recordIndicator.classList.add('hidden');
+      recordBtnText.textContent = 'Start Recording';
+      
+      stream.getTracks().forEach(track => track.stop());
+
+      let mimeType = mediaRecorder.mimeType || 'audio/webm';
+      if (!mimeType) mimeType = 'audio/webm';
+
+      const blob = new Blob(audioChunks, { type: mimeType });
+      const file = new File([blob], 'recording.webm', { type: mimeType });
+      setFile(file);
+    };
+
+    mediaRecorder.start();
+  } catch (err) {
+    console.error('Microphone access error:', err);
+    showError('Could not access microphone. Please ensure permissions are granted.');
+  }
+});
+
 // ── File Handling ─────────────────────────────────
 function setFile(file) {
   selectedFile = file;
@@ -80,6 +148,7 @@ function setFile(file) {
   // Show preview, hide drop zone
   filePreview.classList.remove('hidden');
   dropZone.style.display = 'none';
+  recordSection.style.display = 'none';
 
   // Enable button
   transcribeBtn.disabled = false;
@@ -96,6 +165,7 @@ function clearFile() {
   audioPlayer.src = '';
   filePreview.classList.add('hidden');
   dropZone.style.display = '';
+  recordSection.style.display = '';
   transcribeBtn.disabled = true;
   translateBtn.disabled = true;
   resultsContainer.innerHTML = '';

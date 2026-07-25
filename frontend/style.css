@@ -225,6 +225,51 @@ body {
   padding: 0.15rem 0.5rem;
 }
 
+/* ===== Record Section ===== */
+.record-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.record-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.record-btn {
+  position: relative;
+}
+
+.record-btn.recording {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.record-btn.recording:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.record-indicator {
+  position: absolute;
+  right: 1rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  animation: pulse-record 1.5s infinite;
+}
+
+@keyframes pulse-record {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
 /* ===== File Preview ===== */
 .file-preview {
   background: var(--bg-base);
