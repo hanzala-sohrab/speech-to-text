@@ -1,0 +1,12 @@
+[project]
+name = "stt-whisper-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.139.2",
+    "faster-whisper==1.0.3",
+    "requests==2.32.3",
+    "uvicorn[standard]==0.51.0",
+]
