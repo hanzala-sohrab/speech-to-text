@@ -83,6 +83,30 @@
           <span class="btn-text" id="recordBtnText">Start Recording</span>
           <span class="record-indicator hidden" id="recordIndicator"></span>
         </button>
+        
+        <details class="sample-texts">
+          <summary>Need something to read?</summary>
+          <div class="sample-controls">
+            <select id="sampleLangSelect" class="input sample-select">
+              <option value="en">English</option>
+              <option value="hi">Hindi (हिन्दी)</option>
+              <option value="ur">Urdu (اردو)</option>
+              <option value="ar">Arabic (العربية)</option>
+            </select>
+            <button id="shuffleSampleBtn" class="btn-secondary shuffle-btn" title="Get a different text">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <polyline points="16 3 21 3 21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polyline points="21 16 21 21 16 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="4" y1="4" x2="9" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="sample-content">
+            <p id="sampleTextDisplay"></p>
+          </div>
+        </details>
       </div>
 
       <!-- File Preview -->

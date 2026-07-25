@@ -43,6 +43,72 @@ let isRecording = false;
 let recordStartTime = 0;
 let recordTimerInterval = null;
 
+const sampleLangSelect = document.getElementById('sampleLangSelect');
+const shuffleSampleBtn = document.getElementById('shuffleSampleBtn');
+const sampleTextDisplay = document.getElementById('sampleTextDisplay');
+
+const sampleTexts = {
+  en: [
+    "The quick brown fox jumps over the lazy dog. Technology is evolving faster than ever before, bringing new opportunities and challenges to our daily lives.",
+    "Artificial intelligence is transforming industries across the globe. From healthcare to finance, its impact is profound and far-reaching.",
+    "Reading books exercises the brain and improves vocabulary. It transports the reader into different worlds and offers new perspectives on life."
+  ],
+  hi: [
+    "सभी मनुष्यों को गौरव और अधिकारों के मामले में जन्मजात स्वतन्त्रता और समानता प्राप्त है। उन्हें बुद्धि और अन्तरात्मा की देन प्राप्त है और परस्पर उन्हें भाईचारे के भाव से बर्ताव करना चाहिए।",
+    "भारत एक विशाल और विविधतापूर्ण देश है जहाँ विभिन्न संस्कृतियों, भाषाओं और धर्मों का संगम होता है। इसकी ऐतिहासिक धरोहर बहुत समृद्ध है।",
+    "शिक्षा किसी भी समाज के विकास की नींव होती है। यह हमें सही और गलत में फर्क करना सिखाती है और जीवन में आगे बढ़ने का मार्ग दिखाती है।"
+  ],
+  ur: [
+    "تمام انسان آزاد اور حقوق و عزت کے اعتبار سے برابر پیدا ہوئے ہیں۔ انہیں ضمیر اور عقل ودیعت ہوئی ہے، اس لئے انہیں ایک دوسرے کے ساتھ بھائی چارے کا سلوک کرنا چاہئے۔",
+    "علم ایک ایسی روشنی ہے جو جہالت کے اندھیروں کو دور کرتی ہے۔ یہ انسان کو ترقی کی راہ پر گامزن کرنے کا سب سے بڑا ذریعہ ہے۔",
+    "وقت کی قدر کرنا کامیابی کی پہلی سیڑھی ہے۔ جو لوگ وقت کا صحیح استعمال کرتے ہیں، وہ زندگی کے ہر میدان میں کامیاب ہوتے ہیں۔"
+  ],
+  ar: [
+    "يُولَدُ جَمِيعُ النَّاسِ أَحْرَارًا مُتَسَاوِينَ فِي الْكَرَامَةِ وَالْحُقُوقِ. وَقَدْ وُهِبُوا عَقْلًا وَوِجْدَانًا وَعَلَيْهِمْ أَنْ يُعَامِلَ بَعْضُهُمْ بَعْضًا بِرُوحِ الْإِخَاءِ.",
+    "الْعِلْمُ نُورٌ يُضِيءُ دُرُوبَ الْحَيَاةِ وَيَفْتَحُ آفَاقًا جَدِيدَةً لِلْمَعْرِفَةِ. مِنْ خِلَالِ التَّعَلُّمِ الْمُسْتَمِرِّ، يُمْكِنُ لِلْإِنْسَانِ تَحْقِيقُ أَحْلَامِهِ وَتَطْوِيرُ مُجْتَمَعِهِ.",
+    "الْقِرَاءَةُ غِذَاءُ الرُّوحِ وَالْعَقْلِ. تَأْخُذُنَا الْكُتُبُ فِي رِحْلَاتٍ مُمْتِعَةٍ عَبْرَ الزَّمَنِ وَالْأَمَاكِنِ، وَتُوَسِّعُ مَدَارِكَنَا وَتُثْرِي ثَقَافَتَنَا."
+  ]
+};
+
+function getRandomSampleText(lang) {
+  const texts = sampleTexts[lang];
+  const randomIndex = Math.floor(Math.random() * texts.length);
+  return texts[randomIndex];
+}
+
+function updateSampleText() {
+  if (sampleLangSelect && sampleTextDisplay) {
+    const lang = sampleLangSelect.value;
+    sampleTextDisplay.textContent = getRandomSampleText(lang);
+
+    // Adjust font size and direction based on language
+    if (lang === 'hi') {
+      sampleTextDisplay.style.fontSize = '1.15rem';
+      sampleTextDisplay.style.lineHeight = '1.6';
+      sampleTextDisplay.dir = 'ltr';
+    } else if (lang === 'ur' || lang === 'ar') {
+      sampleTextDisplay.style.fontSize = '1.25rem';
+      sampleTextDisplay.style.lineHeight = '1.8';
+      sampleTextDisplay.dir = 'rtl';
+    } else {
+      sampleTextDisplay.style.fontSize = '';
+      sampleTextDisplay.style.lineHeight = '';
+      sampleTextDisplay.dir = 'ltr';
+    }
+  }
+}
+
+if (sampleLangSelect) {
+  sampleLangSelect.addEventListener('change', updateSampleText);
+}
+
+if (shuffleSampleBtn) {
+  shuffleSampleBtn.addEventListener('click', updateSampleText);
+}
+
+// Initial text population
+updateSampleText();
+
 let selectedFile = null;
 
 // ── Drag & Drop ───────────────────────────────────
