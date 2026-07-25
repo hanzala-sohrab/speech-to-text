@@ -31,7 +31,18 @@
         </div>
         <span class="logo-text">Whisper <span class="logo-accent">STT</span></span>
       </div>
-      <div class="header-badge">Powered by OpenAI Whisper</div>
+      <div class="header-right">
+        <button id="settingsBtn" class="icon-btn" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <!-- <div class="header-badge">Powered by OpenAI Whisper</div> -->
+      </div>
     </header>
 
     <!-- Hero -->
@@ -46,161 +57,162 @@
       <!-- Input Panel -->
       <div class="input-panel">
         <!-- Upload Card -->
-    <div class="card upload-card">
-      <!-- Drop Zone -->
-      <div class="drop-zone" id="dropZone">
-        <div class="drop-zone-inner">
-          <div class="drop-icon" id="dropIcon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="1.5"
-                stroke-linecap="round" stroke-linejoin="round" />
-              <polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-              <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
+        <div class="card upload-card">
+          <!-- Drop Zone -->
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-inner">
+              <div class="drop-icon" id="dropIcon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                  <polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" />
+                </svg>
+              </div>
+              <p class="drop-title" id="dropTitle">Drop your audio file here</p>
+              <p class="drop-subtitle">or click to browse</p>
+              <div class="file-types">
+                <span class="badge">WAV</span>
+                <span class="badge">MP3</span>
+                <span class="badge">M4A</span>
+                <span class="badge">OGG</span>
+                <span class="badge">FLAC</span>
+              </div>
+            </div>
+            <input type="file" id="fileInput" accept="audio/*" hidden />
           </div>
-          <p class="drop-title" id="dropTitle">Drop your audio file here</p>
-          <p class="drop-subtitle">or click to browse</p>
-          <div class="file-types">
-            <span class="badge">WAV</span>
-            <span class="badge">MP3</span>
-            <span class="badge">M4A</span>
-            <span class="badge">OGG</span>
-            <span class="badge">FLAC</span>
+
+          <!-- Record Section -->
+          <div class="record-section" id="recordSection">
+            <p class="record-text">Or record directly from microphone</p>
+            <button class="btn-secondary record-btn" id="recordBtn">
+              <span class="btn-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" stroke="currentColor"
+                    stroke-width="1.8" stroke-linecap="round" />
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                  <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                  <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="btn-text" id="recordBtnText">Start Recording</span>
+              <span class="record-indicator hidden" id="recordIndicator"></span>
+            </button>
+
+            <details class="sample-texts">
+              <summary>Need something to read?</summary>
+              <div class="sample-controls">
+                <select id="sampleLangSelect" class="input sample-select">
+                  <option value="en">English</option>
+                  <option value="hi">Hindi (हिन्दी)</option>
+                  <option value="ur">Urdu (اردو)</option>
+                  <option value="ar">Arabic (العربية)</option>
+                </select>
+                <button id="shuffleSampleBtn" class="icon-btn shuffle-btn" title="Get a different text">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <polyline points="16 3 21 3 21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round"></line>
+                    <polyline points="21 16 21 21 16 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round"></line>
+                    <line x1="4" y1="4" x2="9" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round"></line>
+                  </svg>
+                </button>
+              </div>
+              <div class="sample-content">
+                <p id="sampleTextDisplay"></p>
+              </div>
+            </details>
           </div>
-        </div>
-        <input type="file" id="fileInput" accept="audio/*" hidden />
-      </div>
-      
-      <!-- Record Section -->
-      <div class="record-section" id="recordSection">
-        <p class="record-text">Or record directly from microphone</p>
-        <button class="btn-secondary record-btn" id="recordBtn">
-          <span class="btn-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-          </span>
-          <span class="btn-text" id="recordBtnText">Start Recording</span>
-          <span class="record-indicator hidden" id="recordIndicator"></span>
-        </button>
-        
-        <details class="sample-texts">
-          <summary>Need something to read?</summary>
-          <div class="sample-controls">
-            <select id="sampleLangSelect" class="input sample-select">
-              <option value="en">English</option>
-              <option value="hi">Hindi (हिन्दी)</option>
-              <option value="ur">Urdu (اردو)</option>
-              <option value="ar">Arabic (العربية)</option>
-            </select>
-            <button id="shuffleSampleBtn" class="btn-secondary shuffle-btn" title="Get a different text">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <polyline points="16 3 21 3 21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
-                <line x1="4" y1="20" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
-                <polyline points="21 16 21 21 16 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
-                <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
-                <line x1="4" y1="4" x2="9" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
-              </svg>
+
+          <!-- File Preview -->
+          <div class="file-preview hidden" id="filePreview">
+            <div class="file-info">
+              <div class="file-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5" />
+                  <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+              </div>
+              <div class="file-details">
+                <span class="file-name" id="fileName">audio.wav</span>
+                <span class="file-size" id="fileSize">0 KB</span>
+              </div>
+              <button class="remove-btn" id="removeFile" title="Remove file">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </button>
+            </div>
+            <div class="audio-player-wrapper">
+              <audio id="audioPlayer" controls></audio>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <!-- Transcribe Button -->
+            <button class="btn-primary" id="transcribeBtn" disabled>
+              <span class="btn-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" fill="currentColor" />
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="btn-text">Transcribe Audio</span>
+              <span class="btn-loader hidden" id="btnLoader">
+                <span class="spinner"></span>
+              </span>
+            </button>
+
+            <!-- Translate Button -->
+            <button class="btn-primary btn-secondary" id="translateBtn" disabled>
+              <span class="btn-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" />
+                  <path
+                    d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                    stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span class="btn-text">Translate (to EN)</span>
+              <span class="btn-loader hidden" id="translateLoader">
+                <span class="spinner"></span>
+              </span>
             </button>
           </div>
-          <div class="sample-content">
-            <p id="sampleTextDisplay"></p>
-          </div>
-        </details>
-      </div>
-
-      <!-- File Preview -->
-      <div class="file-preview hidden" id="filePreview">
-        <div class="file-info">
-          <div class="file-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-              <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5" />
-              <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.5" />
-            </svg>
-          </div>
-          <div class="file-details">
-            <span class="file-name" id="fileName">audio.wav</span>
-            <span class="file-size" id="fileSize">0 KB</span>
-          </div>
-          <button class="remove-btn" id="removeFile" title="Remove file">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-          </button>
         </div>
-        <div class="audio-player-wrapper">
-          <audio id="audioPlayer" controls></audio>
-        </div>
-      </div>
-
-      <!-- Prompt Section -->
-      <div class="prompt-section">
-        <label class="label" for="promptInput">
-          Context Hints <span class="label-hint">(optional — comma-separated keywords to improve accuracy)</span>
-        </label>
-        <input type="text" id="promptInput" class="input" placeholder="e.g. lorem, ipsum" value="lorem, ipsum" />
-      </div>
-
-      <!-- Resample Toggle -->
-      <div class="toggle-row">
-        <div class="toggle-label-group">
-          <span class="toggle-label">Resample to 16 kHz</span>
-          <span class="toggle-hint">Recommended — Whisper's native sample rate; reduces upload size</span>
-        </div>
-        <label class="toggle-switch" for="resampleToggle" title="Resample audio to 16kHz mono before uploading">
-          <input type="checkbox" id="resampleToggle" checked />
-          <span class="toggle-track">
-            <span class="toggle-thumb"></span>
-          </span>
-        </label>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="action-buttons">
-        <!-- Transcribe Button -->
-        <button class="btn-primary" id="transcribeBtn" disabled>
-          <span class="btn-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" fill="currentColor" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-            </svg>
-          </span>
-          <span class="btn-text">Transcribe Audio</span>
-          <span class="btn-loader hidden" id="btnLoader">
-            <span class="spinner"></span>
-          </span>
-        </button>
-
-        <!-- Translate Button -->
-        <button class="btn-primary btn-secondary" id="translateBtn" disabled>
-          <span class="btn-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" />
-              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <span class="btn-text">Translate (to EN)</span>
-          <span class="btn-loader hidden" id="translateLoader">
-            <span class="spinner"></span>
-          </span>
-        </button>
-      </div>
-    </div>
 
       </div> <!-- End Input Panel -->
 
       <!-- Output Panel -->
       <div class="output-panel">
+        <div class="output-header">
+          <h2 class="output-title">Transcriptions</h2>
+          <button id="clearAllBtn" class="icon-btn danger-btn hidden" title="Clear All Results">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Clear All</span>
+          </button>
+        </div>
         <!-- Results Container -->
         <div id="resultsContainer" class="results-container"></div>
-    
+
         <!-- Result Card Template -->
         <template id="resultTemplate">
           <div class="card result-card">
@@ -220,10 +232,18 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="1.8"
                         stroke-linecap="round" />
-                      <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                      <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                      <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" />
+                      <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" />
                     </svg>
                     <span>Download</span>
+                  </button>
+                  <button class="icon-btn deleteBtn" title="Delete result">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -234,7 +254,7 @@
             </div>
           </div>
         </template>
-    
+
         <!-- Error Card -->
         <div class="card error-card hidden" id="errorCard">
           <div class="error-inner">
@@ -242,7 +262,8 @@
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" />
                 <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" />
               </svg>
             </div>
             <div class="error-content">
@@ -265,6 +286,45 @@
       <p>Local Whisper STT • <span id="apiEndpoint">http://localhost:8010/transcribe</span></p>
     </footer>
   </main>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-overlay" id="settingsModalOverlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Transcription Settings</h3>
+        <button id="closeSettingsBtn" class="icon-btn close-btn" title="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Prompt Section -->
+        <div class="prompt-section">
+          <label class="label" for="promptInput">
+            Context Hints <span class="label-hint">(optional — comma-separated keywords)</span>
+          </label>
+          <input type="text" id="promptInput" class="input" placeholder="e.g. lorem, ipsum..." />
+        </div>
+
+        <!-- Resample Toggle -->
+        <div class="toggle-row">
+          <div class="toggle-label-group">
+            <span class="toggle-label">Resample to 16 kHz</span>
+            <span class="toggle-hint">Recommended — reduces upload size</span>
+          </div>
+          <label class="toggle-switch" for="resampleToggle" title="Resample audio to 16kHz mono before uploading">
+            <input type="checkbox" id="resampleToggle" checked />
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

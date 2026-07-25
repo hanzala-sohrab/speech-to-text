@@ -27,10 +27,16 @@ const translateIcon   = document.querySelector('#translateBtn .btn-icon');
 
 const resultsContainer = document.getElementById('resultsContainer');
 const resultTemplate = document.getElementById('resultTemplate');
+const clearAllBtn    = document.getElementById('clearAllBtn');
 const errorCard     = document.getElementById('errorCard');
 const errorMessage  = document.getElementById('errorMessage');
 const errorClose    = document.getElementById('errorClose');
 const resampleToggle = document.getElementById('resampleToggle');
+
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsModal = document.getElementById('settingsModal');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const settingsModalOverlay = document.getElementById('settingsModalOverlay');
 
 const recordSection = document.getElementById('recordSection');
 const recordBtn = document.getElementById('recordBtn');
@@ -112,6 +118,36 @@ updateSampleText();
 let selectedFile = null;
 
 // ── Drag & Drop ───────────────────────────────────
+// ── Modal Logic ───────────────────────────────────
+settingsBtn.addEventListener('click', () => {
+  settingsModal.classList.remove('hidden');
+});
+
+const closeModal = () => {
+  settingsModal.classList.add('hidden');
+};
+
+closeSettingsBtn.addEventListener('click', closeModal);
+settingsModalOverlay.addEventListener('click', closeModal);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !settingsModal.classList.contains('hidden')) {
+    closeModal();
+  }
+});
+
+function updateClearAllBtnVisibility() {
+  if (resultsContainer.children.length > 0) {
+    clearAllBtn.classList.remove('hidden');
+  } else {
+    clearAllBtn.classList.add('hidden');
+  }
+}
+
+clearAllBtn.addEventListener('click', () => {
+  resultsContainer.innerHTML = '';
+  updateClearAllBtnVisibility();
+});
+
 dropZone.addEventListener('click', () => fileInput.click());
 
 dropZone.addEventListener('dragover', (e) => {
@@ -390,8 +426,16 @@ function showResult(text, meta, title) {
     URL.revokeObjectURL(url);
   });
 
+  // Local Delete handler
+  const deleteBtn = card.querySelector('.deleteBtn');
+  deleteBtn.addEventListener('click', () => {
+    card.remove();
+    updateClearAllBtnVisibility();
+  });
+
   resultsContainer.prepend(card);
   card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  updateClearAllBtnVisibility();
 }
 
 function showError(msg) {
