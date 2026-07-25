@@ -27,13 +27,11 @@ docker compose up -d --build
 ```
 This will start the server at `http://localhost:8010`.
 
-**Or using a virtual environment:**
+**Or using uv (fastest):**
 ```bash
 cd server
-python3.12 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn server:app --host 0.0.0.0 --port 8010
+uv sync
+uv run uvicorn server:app --host 0.0.0.0 --port 8010
 ```
 
 *For more backend configuration options, see the [server/README.md](server/README.md).*

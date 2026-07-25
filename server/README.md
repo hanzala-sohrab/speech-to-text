@@ -11,9 +11,8 @@ CPU — no API key, no per-minute cost, audio never leaves this machine.
 
 ```bash
 cd server
-python3.12 -m venv venv
-./venv/bin/pip install -r requirements.txt
-./venv/bin/uvicorn server:app --host 0.0.0.0 --port 8010   # downloads the model on first run
+uv sync
+uv run uvicorn server:app --host 0.0.0.0 --port 8010   # downloads the model on first run
 ```
 
 Then point the backend at it:
