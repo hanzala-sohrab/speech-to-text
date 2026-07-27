@@ -43,6 +43,13 @@ const recordBtn = document.getElementById('recordBtn');
 const recordBtnText = document.getElementById('recordBtnText');
 const recordIndicator = document.getElementById('recordIndicator');
 
+const dictationSection = document.getElementById('dictationSection');
+const dictationBtn = document.getElementById('dictationBtn');
+const dictationBtnText = document.getElementById('dictationBtnText');
+const dictationIndicator = document.getElementById('dictationIndicator');
+const dictationLiveText = document.getElementById('dictationLiveText');
+const providerSelect = document.getElementById('providerSelect');
+
 let mediaRecorder = null;
 let audioChunks = [];
 let isRecording = false;
@@ -116,6 +123,91 @@ if (shuffleSampleBtn) {
 updateSampleText();
 
 let selectedFile = null;
+
+providerSelect.addEventListener('change', () => {
+  const provider = providerSelect.value;
+  if (provider === 'browser') {
+    dropZone.style.display = 'none';
+    recordSection.style.display = 'none';
+    dictationSection.classList.remove('hidden');
+    transcribeBtn.style.display = 'none';
+    translateBtn.style.display = 'none';
+  } else {
+    if (!selectedFile) {
+      dropZone.style.display = '';
+      recordSection.style.display = '';
+    }
+    dictationSection.classList.add('hidden');
+    transcribeBtn.style.display = '';
+    translateBtn.style.display = '';
+  }
+});
+
+let dictationRecognition = null;
+let isDictating = false;
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  dictationRecognition = new SpeechRecognition();
+  dictationRecognition.continuous = true;
+  dictationRecognition.interimResults = true;
+  
+  dictationRecognition.onstart = () => {
+    isDictating = true;
+    dictationBtn.classList.add('recording');
+    dictationIndicator.classList.remove('hidden');
+    dictationBtnText.textContent = 'Stop Dictation';
+    dictationLiveText.textContent = 'Listening...';
+  };
+  
+  dictationRecognition.onresult = (event) => {
+    let interimTranscript = '';
+    let finalTranscript = '';
+    
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript;
+      } else {
+        interimTranscript += event.results[i][0].transcript;
+      }
+    }
+    
+    if (finalTranscript) {
+       showResult(finalTranscript.trim(), { elapsed: 'live', file: 'Browser Mic', size: '-', resampledNote: '' }, 'Browser Dictation');
+    }
+    dictationLiveText.textContent = interimTranscript || 'Listening...';
+  };
+  
+  dictationRecognition.onerror = (event) => {
+    console.error('Speech recognition error', event.error);
+    showError('Speech recognition error: ' + event.error);
+    stopDictation();
+  };
+  
+  dictationRecognition.onend = () => {
+    stopDictation();
+  };
+}
+
+function stopDictation() {
+  isDictating = false;
+  dictationBtn.classList.remove('recording');
+  dictationIndicator.classList.add('hidden');
+  dictationBtnText.textContent = 'Start Dictation';
+  dictationLiveText.textContent = '';
+}
+
+dictationBtn.addEventListener('click', () => {
+  if (!dictationRecognition) {
+    showError('Browser Native Speech Recognition is not supported in this browser.');
+    return;
+  }
+  if (isDictating) {
+    dictationRecognition.stop();
+  } else {
+    dictationRecognition.start();
+  }
+});
 
 // ── Drag & Drop ───────────────────────────────────
 // ── Modal Logic ───────────────────────────────────
@@ -266,8 +358,10 @@ function clearFile() {
   fileInput.value = '';
   audioPlayer.src = '';
   filePreview.classList.add('hidden');
-  dropZone.style.display = '';
-  recordSection.style.display = '';
+  if (providerSelect.value !== 'browser') {
+    dropZone.style.display = '';
+    recordSection.style.display = '';
+  }
   transcribeBtn.disabled = true;
   translateBtn.disabled = true;
   resultsContainer.innerHTML = '';
@@ -353,13 +447,25 @@ async function processAudio(endpoint, btn, txtElem, iconElem, loaderElem, loadin
   }
 }
 
+function getEndpointBase() {
+  const provider = providerSelect.value;
+  if (provider === 'sarvam') return `${API_BASE}/sarvam`;
+  if (provider === 'deepgram') return `${API_BASE}/deepgram`;
+  return API_BASE;
+}
+
 transcribeBtn.addEventListener('click', () => {
-  processAudio(API_BASE, transcribeBtn, btnText, btnIcon, btnLoader, 'Transcribing…', 'Transcribe Audio', 'Transcription');
+  const providerName = providerSelect.options[providerSelect.selectedIndex].text;
+  processAudio(getEndpointBase(), transcribeBtn, btnText, btnIcon, btnLoader, 'Transcribing…', 'Transcribe Audio', `Transcription (${providerName})`);
 });
 
 translateBtn.addEventListener('click', () => {
-  const TRANSLATE_URL = API_BASE.replace('/transcribe', '/translate');
-  processAudio(TRANSLATE_URL, translateBtn, translateText, translateIcon, translateLoader, 'Translating…', 'Translate (to EN)', 'Translation (to EN)');
+  let url = getEndpointBase();
+  const providerName = providerSelect.options[providerSelect.selectedIndex].text;
+  if (providerSelect.value === 'local') {
+    url = url.replace('/transcribe', '/translate');
+  }
+  processAudio(url, translateBtn, translateText, translateIcon, translateLoader, 'Translating…', 'Translate (to EN)', `Translation (${providerName})`);
 });
 
 // ── UI Helpers ────────────────────────────────────

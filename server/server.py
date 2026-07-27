@@ -8,8 +8,17 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 MODEL_SIZE = os.environ.get("WHISPER_MODEL_SIZE", "small")
 COMPUTE_TYPE = os.environ.get("WHISPER_COMPUTE_TYPE", "int8")
+
+SARVAM_API_KEY = os.environ.get("SARVAM_API_KEY", "")
+DEEPGRAM_API_KEY = os.environ.get("DEEPGRAM_API_KEY", "")
+
+import httpx
 
 app = FastAPI()
 # Same CORS_ORIGIN convention as the Node backend (backend/src/config/index.js)
@@ -85,3 +94,69 @@ async def translate(request: Request, prompt: str = ""):
     # model.transcribe() is a blocking CPU call
     text = await run_in_threadpool(run_transcribe, audio, prompt, "translate")
     return {"text": text}
+
+@app.post("/transcribe/sarvam")
+async def transcribe_sarvam(request: Request, prompt: str = ""):
+    if not SARVAM_API_KEY:
+        raise HTTPException(status_code=400, detail="SARVAM_API_KEY is not configured on the server")
+    
+    wav_bytes = await request.body()
+    if not wav_bytes:
+        raise HTTPException(status_code=400, detail="empty body")
+        
+    url = "https://api.sarvam.ai/speech-to-text"
+    headers = {
+        "api-subscription-key": SARVAM_API_KEY
+    }
+    
+    files = {
+        "file": ("audio.wav", wav_bytes, "audio/wav")
+    }
+    data = {
+        "model": "saaras:v3",
+        "mode": "transcribe"
+    }
+    if prompt:
+        data["prompt"] = prompt
+        
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(url, headers=headers, data=data, files=files, timeout=60.0)
+        
+    if resp.status_code != 200:
+        raise HTTPException(status_code=resp.status_code, detail=f"Sarvam API error: {resp.text}")
+        
+    try:
+        json_data = resp.json()
+        transcript = json_data.get("transcript") or json_data.get("text") or resp.text
+        return {"text": transcript}
+    except:
+        return {"text": resp.text}
+
+@app.post("/transcribe/deepgram")
+async def transcribe_deepgram(request: Request, prompt: str = ""):
+    if not DEEPGRAM_API_KEY:
+        raise HTTPException(status_code=400, detail="DEEPGRAM_API_KEY is not configured on the server")
+        
+    wav_bytes = await request.body()
+    if not wav_bytes:
+        raise HTTPException(status_code=400, detail="empty body")
+        
+    url = "https://api.deepgram.com/v1/listen?model=nova-3"
+        
+    headers = {
+        "Authorization": f"Token {DEEPGRAM_API_KEY}",
+        "Content-Type": "audio/wav"
+    }
+    
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(url, headers=headers, content=wav_bytes, timeout=60.0)
+        
+    if resp.status_code != 200:
+        raise HTTPException(status_code=resp.status_code, detail=f"Deepgram API error: {resp.text}")
+        
+    try:
+        json_data = resp.json()
+        transcript = json_data["results"]["channels"][0]["alternatives"][0]["transcript"]
+        return {"text": transcript}
+    except:
+        return {"text": resp.text}
