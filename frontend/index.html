@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Whisper STT — Voice Transcription</title>
-  <meta name="description" content="Upload a voice sample and get accurate transcriptions powered by Whisper STT." />
+  <title>Speech To Text</title>
+  <meta name="description"
+    content="Upload a voice sample and get accurate transcriptions powered by multiple STT providers." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -29,7 +30,7 @@
             <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           </svg>
         </div>
-        <span class="logo-text">Whisper <span class="logo-accent">STT</span></span>
+        <span class="logo-text">Speech To <span class="logo-accent">Text</span></span>
       </div>
       <div class="header-right" style="display: flex; align-items: center; gap: 0.5rem;">
         <select id="providerSelect" class="input"
@@ -312,7 +313,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <p>Local Whisper STT • <span id="apiEndpoint">http://localhost:8010/transcribe</span></p>
+      <p>Speech To Text • <span id="apiEndpoint">http://localhost:8010/transcribe</span></p>
     </footer>
   </main>
 

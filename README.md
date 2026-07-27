@@ -1,14 +1,16 @@
-# Whisper STT
+# Speech To Text
 
-A self-hosted, fully open-source speech-to-text project using [faster-whisper](https://github.com/SYSTRAN/faster-whisper) locally on CPU. No API keys, no per-minute costs, and your audio never leaves your machine.
+A sleek, self-hosted web interface that supports multiple Speech-to-Text (STT) providers out of the box. Use the privacy-first local [faster-whisper](https://github.com/SYSTRAN/faster-whisper) engine on your CPU, tap into blazing fast cloud APIs like **Deepgram** and **Sarvam AI**, or utilize the **Browser Native Dictation** API.
 
 This project consists of two parts:
-1. **Server (`/server`)**: A Python-based API server running `faster-whisper` and exposing a `/transcribe` endpoint.
-2. **Frontend (`/frontend`)**: A clean, vanilla HTML/JS/CSS web interface for uploading audio files, previewing them, and interacting directly with the local STT server.
+1. **Server (`/server`)**: A Python-based API server running `faster-whisper` and securely proxying requests to external APIs (Sarvam, Deepgram).
+2. **Frontend (`/frontend`)**: A clean, vanilla HTML/JS/CSS web interface for uploading audio files, previewing them, performing live dictation, and selecting your preferred STT provider.
 
 ## Features
 
-- **Privacy-first**: All processing is done locally.
+- **Multi-Provider Support**: Seamlessly switch between Local Whisper, Sarvam AI, Deepgram, and Browser Native Dictation.
+- **Privacy-first Local Mode**: Run Whisper processing entirely on your machine.
+- **Live Dictation**: Record voice directly from your microphone using the native Web Speech API.
 - **Fast Resampling**: The frontend can optionally resample audio to 16kHz mono in the browser via the Web Audio API to significantly reduce upload times.
 - **Context Hints**: You can provide a vocabulary prompt to bias the model towards specific domain jargon.
 - **Drag & Drop**: Simple and intuitive drag-and-drop file upload interface.
